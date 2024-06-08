@@ -92,7 +92,10 @@ class WebsiteCrawler:
             print(f"PDF already exists for {url}, skipping.")
             return
         print(f"Saving {url} as {filename}")
-        pdfkit.from_url(url, filename, options=self.pdf_options)
+        try:
+            pdfkit.from_url(url, filename, options=self.pdf_options)
+        except IOError as e:
+            print(f"Failed to convert {url} to PDF: {e}")
 
     def crawl(self):
         """
@@ -112,7 +115,10 @@ class WebsiteCrawler:
                     continue
 
                 self.visited_links.add(current_url)
-                self.save_page_as_pdf(current_url)
+                try:
+                    self.save_page_as_pdf(current_url)
+                except Exception as e:
+                    print(f"An error occurred while saving PDF for {current_url}: {e}")
                 self.find_links_on_page(current_url, page_content)
                 pbar.total = len(self.to_visit_links) + len(self.visited_links)
                 pbar.update(1)
