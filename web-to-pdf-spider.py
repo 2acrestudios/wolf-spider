@@ -45,7 +45,7 @@ class WebsiteCrawler:
         pdfkit.from_url(url, filename, options=self.pdf_options)
 
     def crawl(self):
-        with tqdm(total=len(self.to_visit_links)) as pbar:
+        with tqdm(total=len(self.to_visit_links), bar_format='{l_bar}🕷️|{bar}| {n_fmt}/{total_fmt} [elapsed: {elapsed} remaining: {remaining}]') as pbar:
             while self.to_visit_links:
                 current_url = self.to_visit_links.pop()
                 if current_url in self.visited_links:
