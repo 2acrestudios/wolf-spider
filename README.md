@@ -4,13 +4,13 @@
 
 Wolf Spider is a Python script that crawls a website and converts its pages into PDFs. It is designed to handle a whole website, starting from a root URL, and create PDF files for each page it visits.
 
-## Features
+**Features**
 - Crawls web pages starting from a root URL.
 - Converts each web page to a PDF file.
 - Handles local file access for PDF generation.
 - Uses progress bar to indicate the crawling process.
 
-## Installation
+**Installation**
 
 1. Clone the repository:
     ```bash
