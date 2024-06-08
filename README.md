@@ -43,6 +43,8 @@ Wolf Spider is a Python script that crawls a website and converts its pages into
 
 2. The script will create a directory named after the domain of the root URL and save all PDF files inside this directory.
 
+3. If there are any issues with fetching pages or converting them to PDF, the script will log these errors to the console.
+
 ## Example
 ```bash
 python wolf_spider.py
