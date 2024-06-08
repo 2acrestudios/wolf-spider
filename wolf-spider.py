@@ -4,6 +4,11 @@ from bs4 import BeautifulSoup
 import pdfkit
 from urllib.parse import urljoin, urlparse, urldefrag
 from tqdm import tqdm
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+import time
 
 class WebsiteCrawler:
     """
@@ -46,6 +51,18 @@ class WebsiteCrawler:
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
+        # Initialize Selenium WebDriver with headless option
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--window-size=1920x1080")
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    def __del__(self):
+        self.driver.quit()
+
     def fetch_page(self, url):
         """
         Fetches the content of a given URL.
@@ -56,12 +73,33 @@ class WebsiteCrawler:
         Returns:
             str: The content of the page if the request is successful, None otherwise.
         """
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
         try:
-            response = requests.get(url)
+            response = requests.get(url, headers=headers)
             response.raise_for_status()
             return response.text
         except requests.RequestException as e:
             print(f"Failed to fetch {url}: {e}")
+            return None
+
+    def fetch_page_selenium(self, url):
+        """
+        Fetches the content of a given URL using Selenium.
+
+        Args:
+            url (str): The URL to fetch.
+
+        Returns:
+            str: The content of the page if the request is successful, None otherwise.
+        """
+        try:
+            self.driver.get(url)
+            time.sleep(3)  # Wait for JavaScript to load content
+            return self.driver.page_source
+        except Exception as e:
+            print(f"Failed to fetch {url} with Selenium: {e}")
             return None
 
     def get_pdf_filename(self, url):
@@ -110,6 +148,9 @@ class WebsiteCrawler:
 
                 print(f"Visiting: {current_url}")
                 page_content = self.fetch_page(current_url)
+                if page_content is None:
+                    page_content = self.fetch_page_selenium(current_url)
+
                 if page_content is None:
                     pbar.update(1)
                     continue
