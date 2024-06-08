@@ -14,7 +14,7 @@ Wolf Spider is a Python script that crawls a website and converts its pages into
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/wolf-spider.git
+    git clone https://github.com/marc-shade/wolf-spider/wolf-spider.git
     cd wolf-spider
     ```
 
@@ -47,3 +47,4 @@ Wolf Spider is a Python script that crawls a website and converts its pages into
 ```bash
 python wolf_spider.py
 Enter the root URL: https://example.com
+```
